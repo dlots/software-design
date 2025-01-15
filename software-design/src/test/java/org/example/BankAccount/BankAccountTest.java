@@ -2,6 +2,7 @@ package org.example.BankAccount;
 
 import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.function.Executable;
 import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,8 +17,12 @@ class BankAccountTest {
     void createAccount() {
         Arrays.asList(0, 5, -5).forEach(initialValue -> {
             System.out.printf("creating account with initial value %d%n", initialValue);
-            BankAccount account = new BankAccount(initialValue);
-            checkBalanceIsPositive(account);
+            try {
+                BankAccount account = BankAccount.createAccount(initialValue);
+                checkBalanceIsPositive(account);
+            } catch (IllegalArgumentException e){
+                e.printStackTrace();
+            }
         });
     }
 
@@ -26,8 +31,14 @@ class BankAccountTest {
         Arrays.asList(0, 100).forEach(initialValue -> {
             Arrays.asList(0, 5, -5).forEach(valueToDeposit -> {
                 System.out.printf("depositing %d to account with value %d%n", valueToDeposit, initialValue);
-                BankAccount account = new BankAccount(initialValue);
-                account.deposit(valueToDeposit);
+                BankAccount account = BankAccount.createAccount(initialValue);
+                final Executable depositCall = () -> account.deposit(valueToDeposit);
+                if (valueToDeposit == -5) {
+                    assertThrows(IllegalArgumentException.class, depositCall);
+                    return;
+                } else {
+                    assertDoesNotThrow(depositCall);
+                }
                 checkBalanceIsPositive(account);
                 assertFalse(account.getBalance() < initialValue, "Account balance is fewer after deposit");
                 assertEquals(account.getBalance(), initialValue + valueToDeposit);
@@ -40,10 +51,16 @@ class BankAccountTest {
         Arrays.asList(0, 100).forEach(initialValue -> {
             Arrays.asList(0, 5, -5).forEach(valueToWithdraw -> {
                 System.out.printf("withdrawing %d from account with value %d%n", valueToWithdraw, initialValue);
-                BankAccount account = new BankAccount(initialValue);
-                account.withdraw(valueToWithdraw);
+                BankAccount account = BankAccount.createAccount(initialValue);
+                final Executable withdrawCall = () -> account.withdraw(valueToWithdraw);
+                if (initialValue == 0 && valueToWithdraw == 5 || valueToWithdraw == -5) {
+                    assertThrows(IllegalArgumentException.class, withdrawCall);
+                    return;
+                } else {
+                    assertDoesNotThrow(withdrawCall);
+                }
                 checkBalanceIsPositive(account);
-                assertFalse(account.getBalance() > initialValue, "Account balance is more after deposit");
+                assertFalse(account.getBalance() > initialValue, "Account balance is more after withdraw");
                 assertEquals(account.getBalance(), initialValue - valueToWithdraw);
             });
         });
