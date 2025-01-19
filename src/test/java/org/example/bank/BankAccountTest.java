@@ -1,4 +1,4 @@
-package org.example.BankAccount;
+package org.example.bank;
 
 import org.junit.jupiter.api.Test;
 

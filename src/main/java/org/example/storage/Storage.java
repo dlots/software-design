@@ -1,4 +1,4 @@
-package org.example.Storage;
+package org.example.storage;
 
 public interface Storage {
     void save(String data);

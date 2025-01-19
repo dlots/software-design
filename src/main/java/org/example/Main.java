@@ -1,6 +1,6 @@
 package org.example;
 
-import org.example.Storage.*;
+import org.example.storage.*;
 
 import java.io.File;
 import java.sql.SQLException;

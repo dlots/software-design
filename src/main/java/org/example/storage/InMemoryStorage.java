@@ -1,4 +1,4 @@
-package org.example.Storage;
+package org.example.storage;
 
 import java.util.HashMap;
 import java.util.Map;

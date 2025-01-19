@@ -1,4 +1,4 @@
-package org.example.BankAccount;
+package org.example.bank;
 
 class BankAccount {
     private double balance;
